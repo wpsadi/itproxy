@@ -8,21 +8,26 @@ l = `
       Aditya                  Goel , 131230000648, https://google.com
    `
 
+storage = sessionStorage
+storage.setItem("count",0)
+
 function createOption(value_data){
    datalist = document.getElementById("search")
 
    option = document.createElement("option")
    option.value = value_data
 
+   // console.log(option)
+
    datalist.append(option)
 }
 
-createOption.destroy = function(){
+function destroyOptions(){
    datalist = document.getElementById("search")
    x = datalist.getElementsByTagName("option")
    // console.log(x.length)
    for (let i of x){
-      datalist.remove(i)
+      datalist.removeChild(i)
    }
 }
 
@@ -41,35 +46,74 @@ function capitalize(string){
    }
 
    // x = ["Ansh" , "K", "Jha"]
-
    return x.join(" ") // string.join(" ") => `Ansh K Jha`
+
 }
 
 
 function listToHTML(list){
+   // console.log(list)
    list = listLookUpChanger(list)
 
    try{
-      createOption.destroy()
+
+      inputValue = document.getElementById("srh-box")
+      inputValue = inputValue.value
+      inputValue = inputValue.trim()
+      inputValue = capitalize(inputValue)
+      update = false
+      console.log(inputValue.length)
+
+      if (inputValue.length >0){
+         destroyOptions()
+         update = true
+      }
+
    }
    catch (error){
       null
    }
 
-   for (let i of list){
-      i = i.split(",")
-      i = i[0]
-      i = i.trim()
-      createOption(capitalize(i))
+   v = function(){
+      for (let i of list){
+         i = i.split(",") // i is a list that conatins info about specific person
+         i = i[0]  // i[0] here contains "name of the person"
+         i = i.trim()
+         createOption(capitalize(i))  // cptilize function returns a comman styled name of person
+      }
    }
+
+
+   
+   if (storage.getItem("count") == 0){
+      v()
+      storage.removeItem("count")
+   }
+   
+   if (update == true){
+      v()
+   }
+
 }
 
 function listLookUpChanger(list){
    list = list.trim()
    list = list.split("\n")
 
+   inputValue = document.getElementById("srh-box")
+   inputValue = inputValue.value
+   inputValue = inputValue.trim()
+   inputValue = capitalize(inputValue)
+
    return list
+
 }
 
+function arrangedArray(listOfNames,inputValue){ // here we have to sort the list by inputValue
+   return listOfNames
+}
 
 listToHTML(l)
+setInterval(function(){
+   listToHTML(l)
+},100)
